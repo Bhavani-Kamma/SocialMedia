@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StoryVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN / SIGN UP -->
+<section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+        <div class="auth-logo">✨ StoryVerse</div>
+        <p class="auth-subtitle">Create your account or log in to continue.</p>
+
+        <div class="auth-tabs">
+            <button id="loginTab" class="auth-tab active" onclick="switchAuth('login')">Log In</button>
+            <button id="signupTab" class="auth-tab" onclick="switchAuth('signup')">Sign Up</button>
+        </div>
+
+        <form id="loginForm" onsubmit="login(event)">
+            <label for="loginUsername">Username</label>
+            <input id="loginUsername" type="text" placeholder="e.g. story_creator" autocomplete="username" required>
+
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password" required>
+
+            <button class="auth-submit" type="submit">Log In</button>
+            <p id="loginMessage" class="auth-message"></p>
+        </form>
+
+        <form id="signupForm" class="hidden" onsubmit="signup(event)">
+            <label for="signupUsername">Create Username</label>
+            <input id="signupUsername" type="text" placeholder="e.g. story_creator" autocomplete="username" required>
+            <small>Use letters and numbers. You may also use _ and .</small>
+
+            <label for="signupPassword">Create Password</label>
+            <input id="signupPassword" type="password" placeholder="e.g. Story@123" autocomplete="new-password" required>
+            <small>Minimum 8 characters: uppercase + lowercase + number + special character.</small>
+
+            <label for="confirmPassword">Confirm Password</label>
+            <input id="confirmPassword" type="password" placeholder="Re-enter your password" autocomplete="new-password" required>
+
+            <button class="auth-submit" type="submit">Create Account</button>
+            <p id="signupMessage" class="auth-message"></p>
+        </form>
+
+        <div class="password-rules">
+            <strong>Example:</strong> Story@123
+        </div>
+    </div>
+</section>
+
+<!-- FULL STORYVERSE WEBSITE -->
+<div id="app" class="hidden">
+
+<header>
+    <h1>✨ StoryVerse</h1>
+    <input type="text" id="search" placeholder="Search stories...">
+    <button onclick="showPage('chat')">💬 Chat</button>
+    <button onclick="logout()" class="logout-btn">Log Out</button>
+</header>
+
+<nav>
+    <button onclick="showPage('home')">🏠 Home</button>
+    <button onclick="showPage('reels')">🎬 Reels</button>
+    <button onclick="showPage('create')">✍️ Create</button>
+    <button onclick="showPage('chat')">💬 Messages</button>
+    <button onclick="showPage('profile')">👤 Profile</button>
+</nav>
+
+<main>
+<section id="home" class="page">
+    <div class="hero">
+        <h2>Stories that come alive ✨</h2>
+        <p>Read stories, watch animated reels and connect with storytellers.</p>
+        <button onclick="showPage('create')">Create Your Story</button>
+        <button onclick="showPage('reels')">Watch Reels</button>
+    </div>
+
+    <h2>Popular Stories</h2>
+    <div class="cards">
+        <div class="card"><span>🐉</span><h3>The Last Dragon</h3><p>A fantasy adventure about a young girl and a hidden dragon.</p><button onclick="openStory('The Last Dragon')">Watch</button></div>
+        <div class="card"><span>🌙</span><h3>Moonlight Mystery</h3><p>A mysterious story that begins in an old village.</p><button onclick="openStory('Moonlight Mystery')">Watch</button></div>
+        <div class="card"><span>🚀</span><h3>Beyond The Stars</h3><p>A young explorer discovers a new world.</p><button onclick="openStory('Beyond The Stars')">Watch</button></div>
+    </div>
+</section>
+
+<section id="reels" class="page hidden">
+    <h2>🎬 Story Reels</h2><p>Scroll through short animated story previews.</p>
+    <div class="reels">
+        <div class="reel"><div class="animation">🐉</div><h3>The Last Dragon</h3><p>Episode 1 • Fantasy</p><button onclick="like(this)">♡ Like</button><button>💬 Comment</button><button onclick="shareStory('The Last Dragon')">↗ Share</button></div>
+        <div class="reel"><div class="animation moon">🌙</div><h3>Moonlight Mystery</h3><p>Episode 1 • Mystery</p><button onclick="like(this)">♡ Like</button><button>💬 Comment</button><button onclick="shareStory('Moonlight Mystery')">↗ Share</button></div>
+        <div class="reel"><div class="animation space">🚀</div><h3>Beyond The Stars</h3><p>Episode 1 • Sci-Fi</p><button onclick="like(this)">♡ Like</button><button>💬 Comment</button><button onclick="shareStory('Beyond The Stars')">↗ Share</button></div>
+    </div>
+</section>
+
+<section id="create" class="page hidden">
+    <h2>✍️ Create Story</h2>
+    <label>Story Title</label><input id="title" type="text" placeholder="Enter story title">
+    <label>Genre</label><select id="genre"><option>Fantasy</option><option>Romance</option><option>Mystery</option><option>Adventure</option><option>Comedy</option><option>Sci-Fi</option><option>Horror</option></select>
+    <label>Your Story</label><textarea id="story" placeholder="Write your story here..."></textarea>
+    <button onclick="generateStory()">🎬 Generate Story Reel</button>
+    <div id="result"></div>
+</section>
+
+<section id="chat" class="page hidden">
+    <h2>💬 Messages</h2>
+    <div class="chat-box"><div class="people"><button onclick="selectPerson('Ananya')">🌸 Ananya</button><button onclick="selectPerson('Rahul')">⭐ Rahul</button><button onclick="selectPerson('Sree')">🌙 Sree</button></div><div class="messages"><h3 id="person">Select a person</h3><div id="messageArea"><p class="received">Hi! Welcome to StoryVerse 👋</p></div><input id="message" placeholder="Type a message..."><button onclick="sendMessage()">Send</button></div></div>
+</section>
+
+<section id="profile" class="page hidden">
+    <div class="profile">
+        <div id="profileAvatar" class="avatar">👩🏻</div>
+        <h2 id="profileName">My Profile</h2>
+        <p id="profileUsername">@username</p>
+        <p id="profileBio">Tell everyone about your stories.</p>
+        <p id="profileInterests">🎭 Genres: Fantasy, Mystery, Adventure</p>
+        <button onclick="openEditProfile()">✏️ Edit Profile</button>
+    </div>
+
+    <div class="my-posts-section">
+        <h2>📝 My Posts</h2>
+        <div id="myPosts" class="my-posts">
+            <p class="no-posts">You have not created any posts yet.</p>
+        </div>
+    </div>
+</section>
+</main>
+</div>
+
+
+<!-- EDIT PROFILE MODAL -->
+<div id="editProfileModal" class="modal hidden">
+    <div class="modal-content edit-profile-content">
+        <button class="close" onclick="closeEditProfile()">✕</button>
+        <h2>✏️ Edit Profile</h2>
+
+        <div class="profile-picture-editor">
+            <div id="editProfileAvatar" class="edit-avatar">👩🏻</div>
+            <label class="upload-picture">📷 Edit Profile Picture
+                <input id="profilePictureInput" type="file" accept="image/*" onchange="previewProfilePicture(event)">
+            </label>
+            <div class="avatar-choices">
+                <button type="button" onclick="chooseAvatar('👩🏻')">👩🏻</button>
+                <button type="button" onclick="chooseAvatar('👨🏻')">👨🏻</button>
+                <button type="button" onclick="chooseAvatar('🧑🏻')">🧑🏻</button>
+                <button type="button" onclick="chooseAvatar('🧑🏽‍🎨')">🧑🏽‍🎨</button>
+                <button type="button" onclick="chooseAvatar('🧑🏽‍🚀')">🧑🏽‍🚀</button>
+            </div>
+        </div>
+
+        <label>Username</label>
+        <input id="editUsername" type="text" readonly>
+
+        <label>Name</label>
+        <input id="editName" type="text" placeholder="Enter your name">
+
+        <label>Bio</label>
+        <textarea id="editBio" rows="3" placeholder="Write something about yourself..."></textarea>
+
+        <label>Story Interests / Genres</label>
+        <input id="editInterests" type="text" placeholder="Fantasy, Romance, Mystery...">
+
+        <button class="auth-submit" type="button" onclick="saveProfile()">💾 Save Profile</button>
+        <p id="profileSaveMessage" class="auth-message"></p>
+    </div>
+</div>
+
+<!-- STORY MODAL -->
+<div id="storyModal" class="modal hidden">
+    <div class="modal-content"><button class="close" onclick="closeStory()">✕</button><div class="big-animation">✨🎬✨</div><h2 id="modalTitle"></h2><p>Your animated story reel is playing...</p><div class="progress"><div></div></div></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
